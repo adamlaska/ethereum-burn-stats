@@ -23,27 +23,34 @@ export interface EthereumNetwork {
 export const EthereumNetworkOptions: {
   [key: string]: EthereumNetwork
 } = {
-  mainnet: { name: "Mainnet", key: "mainnet", genesis: 12965000, chainId: 1},
-  staging: { name: "Staging", key: "staging", genesis: 12965000, chainId: 1},
+  mainnet: { name: "Mainnet", key: "mainnet", genesis: 12965000, chainId: 1 },
+  staging: { name: "Staging", key: "staging", genesis: 12965000, chainId: 1 },
 };
 
 export enum Setting {
+  maxBlocksToChart = "maxBlocksToChart",
   maxBlocksToRender = "maxBlocksToRender",
   doNotShowChart = "doNotShowChart"
 }
 
 export const defaultNetwork = EthereumNetworkOptions['mainnet']
 export const defaultSettings: { [key: string]: DefaultSettingValue } =
-  {
-    [Setting.maxBlocksToRender]: {
-      config: IntegerSetting,
-      defaultValue: 50,
-    },
-    [Setting.doNotShowChart]: {
-      config: BooleanSetting,
-      defaultValue: false,
-    },
-  };
+{
+  [Setting.maxBlocksToRender]: {
+    config: IntegerSetting,
+    defaultValue: 50,
+  },
+  [Setting.maxBlocksToChart]: {
+    config: IntegerSetting,
+    defaultValue: 500,
+  },
+  [Setting.doNotShowChart]: {
+    config: BooleanSetting,
+    defaultValue: false,
+  },
+};
+
+export const maxBlocksToKeepInMemory = 1000;
 
 export const prefetchCount = 20;
 

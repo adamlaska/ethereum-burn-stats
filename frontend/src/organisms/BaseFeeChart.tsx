@@ -2,6 +2,8 @@ import { Box, HStack, Text } from "@chakra-ui/react";
 import { BigNumber, utils } from "ethers";
 import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, TooltipProps, Legend, Area, AreaChart } from 'recharts';
+import { Setting } from "../config";
+import { useSetting } from "../hooks/useSetting";
 import { BlockStats } from "../libs/ethereum";
 import { Zero } from "../utils/number";
 import { BigNumberFormat, BigNumberText } from "./BigNumberText";
@@ -81,13 +83,12 @@ interface ChartData {
   chartType: ChartType
 }
 
-const maxItemsInChart = 20;
-
 function LiveChart(props: BaseFeeChartProps) {
+  const maxBlocksToChart = useSetting(Setting.maxBlocksToChart);
   const [data, setData] = useState<ChartData>()
 
   useEffect(() => {
-    const newData = new Array(maxItemsInChart);
+    const newData = new Array(props.data.length);
     newData.fill({
       tipsFormatted: 0,
       tips: Zero(),
@@ -131,7 +132,7 @@ function LiveChart(props: BaseFeeChartProps) {
       points: newData,
       chartType: props.chartType
     })
-  }, [props.data, props.chartType])
+  }, [maxBlocksToChart, props.data, props.chartType])
 
   const onTickFormat = (value: any, index: number) => {
     switch (props.chartType) {

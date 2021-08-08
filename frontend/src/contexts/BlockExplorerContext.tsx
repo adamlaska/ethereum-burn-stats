@@ -1,10 +1,9 @@
 import { useContext, createContext, useEffect } from "react"
 import { useEthereum } from "./EthereumContext"
 import { BigNumber } from 'ethers'
-import { useSetting } from "../hooks/useSetting";
 import { Loader } from "../organisms/Loader";
 import { useReducer } from "react";
-import { prefetchCount, Setting } from "../config";
+import { maxBlocksToKeepInMemory, prefetchCount } from "../config";
 import { BigNumberMax, BigNumberMin, Zero } from "../utils/number";
 import { Block, BlockStats, EthereumApi } from "../libs/ethereum";
 
@@ -44,7 +43,6 @@ interface NewClientsAction {
 interface NewBlockAction {
   type: 'NEW_BLOCK'
   block: BlockStats
-  maxBlocksToRender: number
 }
 
 interface InitAction {
@@ -111,7 +109,7 @@ const blockExplorerReducer = (state: BlockExplorerContextType, action: ActionTyp
 
       const newState: BlockExplorerContextType = {
         details: { ...state.details, totalBurned, totalTipped },
-        blocks: [action.block, ...((state.blocks || []).slice(0, action.maxBlocksToRender - 1))],
+        blocks: [action.block, ...((state.blocks || []).slice(0, maxBlocksToKeepInMemory - 1))],
         session: state.session
       }
 
@@ -153,7 +151,6 @@ const BlockExplorerProvider = ({
 }) => {
   const { eth } = useEthereum()
   const [state, dispatch] = useReducer(blockExplorerReducer, {})
-  const maxBlocksToRender = useSetting<number>(Setting.maxBlocksToRender)
 
   useEffect(() => {
     if (!eth)
@@ -169,8 +166,7 @@ const BlockExplorerProvider = ({
     const onNewBlockHeader = async (block: BlockStats) => {
       dispatch({
         type: 'NEW_BLOCK',
-        block,
-        maxBlocksToRender
+        block
       })
     }
 
@@ -224,7 +220,7 @@ const BlockExplorerProvider = ({
       eth.off('block', onNewBlockHeader)
       eth.off('client', onClient)
     }
-  }, [eth, maxBlocksToRender])
+  }, [eth])
 
   return (
     <BlockExplorerContext.Provider
