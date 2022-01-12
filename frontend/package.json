@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^1.6.5",
-    "@emotion/react": "^11.4.0",
+    "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.3.0",
     "@ethersproject/abstract-provider": "^5.4.1",
     "ethers": "^5.4.4",
